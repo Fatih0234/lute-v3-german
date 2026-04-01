@@ -1,0 +1,21 @@
+# pre-commit config, per https://pre-commit.com/
+#
+# These hooks only use local commands.
+
+fail_fast: true
+
+repos:
+  - repo: local
+    hooks:
+    - id: black
+      name: black
+      entry: black
+      language: system
+      types: [python]
+      require_serial: true
+    # - id: pylint
+    #   name: pylint
+    #   entry: pylint
+    #   language: system
+    #   types: [python]
+    #   require_serial: true
