@@ -37,3 +37,21 @@ pytest
 # Run linting
 pylint lute
 ```
+
+## Features
+
+### YouGlish Integration
+
+A YouGlish sidebar tab has been added for pronunciation lookup:
+
+- **Location**: Appears in the dictionary tabs alongside "Sentences" and "Images"
+- **Behavior**: Opens YouGlish.com in a popup window (1000x700) with the selected text
+- **URL Format**: `https://youglish.com/pronounce/{text}/{language}`
+- **Supported Languages**: English (english), German/Deutsch (german)
+- **Word Count**: Works with any number of words (single or multiple)
+
+**Implementation Details:**
+- `lute/static/js/dict-tabs.js`: Added `YouGlishLookupButton` class extending `GeneralLookupButton`
+- `lute/read/routes.py`: Passes `lang_name` to template for language detection
+- `lute/templates/read/index.html`: Sets `LookupButton.LANG_NAME` variable
+- `lute/static/css/styles.css`: Orange branded button styling (#ff6b35)
