@@ -1,32 +1,33 @@
-# Lute v3
+# Lute v3 German - AI-Enhanced Language Learning
 
-[![tests](https://github.com/jzohrab/lute_v3/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/jzohrab/lute_v3/actions/workflows/ci.yml?query=branch%3Amaster)
-[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
-[![coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/jzohrab/a15001ec2ff889f7be0b553df9881566/raw/covbadge.json)](https://github.com/jzohrab/lute_v3/actions/workflows/ci.yml?query=branch%3Amaster)
-[![Discord Server](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/CzFUQP5m8u)
+**A personal experimental project for German language learning with AI agents.**
 
+This is a fork-turned-standalone project based on [Lute v3](https://github.com/jzohrab/lute_v3), customized for personal German language learning and experimenting with AI-powered features.
 
-This repo contains the source code for Lute (Learning Using Texts) v3, a Python/Flask tool for learning foreign languages through reading.
+## What This Project Is
 
-To learn more about Lute v3, or to install it for your own use and study, please see the [Lute v3 manual](https://luteorg.github.io/lute-manual/).
+- **Personal Language Learning Tool**: Built specifically for my own German learning journey
+- **AI Agent Experimentation**: Testing how AI agents can enhance language learning workflows
+- **Experimental AI Features**: Prototyping new AI-driven capabilities for vocabulary acquisition, pronunciation, and comprehension
 
-![Lute v3 demo](https://luteorg.github.io/lute-manual/assets/intro.gif)
+## Current AI/Experimental Features
 
-# Getting Started
+- **YouGlish Integration**: Quick pronunciation lookup using YouGlish videos
+- **Dictionary Integration**: Linguee support for German translations
+- **Custom Theme Adjustments**: Modified for better readability and personal preference
+- **AI Agent Integration**: Exploring automated content processing and learning recommendations
 
-## Users
+## Why This Exists
 
-See the [Lute v3 manual](https://luteorg.github.io/lute-manual/).  Hop onto the [Discord](https://discord.gg/CzFUQP5m8u) too.
+Rather than using the full Lute v3 with all its complexity, this is a stripped-down, focused version for:
+1. Faster iteration on experimental features
+2. Personal workflow optimization
+3. AI agent testing in a real language learning context
 
-## Developing
+## Original Lute v3
 
-For more information on building and developing, please see [Development](../../wiki/Development).
+This project started as a fork of [Lute v3](https://github.com/jzohrab/lute_v3) by jzohrab. Check out the original for a full-featured language learning platform.
 
-## Contributing
+## License
 
-If you'd like to contribute code to Lute (hooray!), check out the [Contribution Guidelines](../../wiki/Contributing).  And with every repo star, an angel gets its wings.
-
-# License
-
-Lute uses the MIT license: [LICENSE](./LICENSE.txt)
+MIT License (inherited from original Lute v3)
