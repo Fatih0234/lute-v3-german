@@ -1635,24 +1635,6 @@ input[type="checkbox"][disabled] + label {
     border-bottom: none;
 }
 
-#dicttabsstatic .dict-btn.dict-youglish-btn {
-    width: 5.5rem;
-    background-color: #ff6b35;
-    color: white;
-    border: 1px solid #ff6b35;
-    border-bottom: none;
-    font-weight: 600;
-}
-
-#dicttabsstatic .dict-btn.dict-youglish-btn:hover {
-    background-color: #e55a2b;
-}
-
-#dicttabsstatic .dict-btn.dict-youglish-btn.dict-btn-active {
-    background-color: #e55a2b;
-    box-shadow: inset 0 0 0 2px #ffffff;
-}
-
 .dict-btn:not(#dict-image-btn):not(.dict-btn-select):last-of-type {
     border-right: 1px solid #aaceea;
 }
@@ -2348,23 +2330,4 @@ div#termimagesearch span.imageAction {
 div#termimagesearch span.imageAction:hover {
     color: #C00000;
     cursor: pointer;
-}
-
-/* YouGlish button styling */
-#dicttabsstatic .dict-btn.dict-youglish-btn {
-    width: 5.5rem;
-    background-color: #ff6b35;
-    color: white;
-    border: 1px solid #ff6b35;
-    border-bottom: none;
-    font-weight: 600;
-}
-
-#dicttabsstatic .dict-btn.dict-youglish-btn:hover {
-    background-color: #e55a2b;
-}
-
-#dicttabsstatic .dict-btn.dict-youglish-btn.dict-btn-active {
-    background-color: #e55a2b;
-    box-shadow: inset 0 0 0 2px #ffffff;
 }
