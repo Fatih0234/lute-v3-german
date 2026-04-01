@@ -59,8 +59,12 @@ def edit_settings():
         if field.id != "csrf_token":
             field.data = repo.get_value(field.id)
         if isinstance(field, BooleanField):
-            # Hack: set boolean settings to ints, otherwise they're always checked.
-            field.data = int(field.data or 0)
+            # Handle both string "1"/"0" and Python boolean string representations
+            val = field.data
+            if val in (True, "True", "1", "y", 1):
+                field.data = 1
+            else:
+                field.data = 0
 
     return render_template("settings/form.html", form=form)
 
