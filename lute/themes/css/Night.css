@@ -123,22 +123,3 @@ span.hamburger {
   background-color: #4a5568 !important; /* dark gray-blue */
   color: var(--font-color) !important;
 }
-
-/* YouGlish button styling - Night theme adjustments */
-#dicttabsstatic .dict-btn.dict-youglish-btn {
-  width: 5.5rem;
-  background-color: #ff6b35;
-  color: white;
-  border: 1px solid #ff6b35;
-  border-bottom: none;
-  font-weight: 600;
-}
-
-#dicttabsstatic .dict-btn.dict-youglish-btn:hover {
-  background-color: #e55a2b;
-}
-
-#dicttabsstatic .dict-btn.dict-youglish-btn.dict-btn-active {
-  background-color: #e55a2b;
-  box-shadow: inset 0 0 0 2px #ffffff;
-}

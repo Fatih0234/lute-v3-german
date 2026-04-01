@@ -68,16 +68,38 @@ class LookupButton {
  * so it's fine to always reload.
  */
 class GeneralLookupButton extends LookupButton {
-  constructor(btn_id, btn_textContent, btn_title, btn_className, clickHandler) {
+  constructor(btn_id, btn_textContent, btn_title, btn_className, clickHandler, faviconDomain = null, isExternal = false) {
     super(`frame_for_${btn_id}`);
 
     const b = this.btn;
     b.setAttribute("id", btn_id);
     b.setAttribute("title", btn_title);
     b.textContent = btn_textContent;
-    b.classList.add(btn_className);
+    
+    // Handle multiple classes (space-separated)
+    if (btn_className) {
+      const classes = btn_className.split(/\s+/).filter(c => c.trim());
+      classes.forEach(cls => b.classList.add(cls));
+    }
 
     this.click_handler = clickHandler;
+
+    // Add favicon if domain provided
+    if (faviconDomain) {
+      const fimg = document.createElement("img");
+      fimg.classList.add("dict-btn-fav-img");
+      fimg.src = `https://www.google.com/s2/favicons?domain=${faviconDomain}`;
+      // Must prepend after textContent is set
+      this.btn.prepend(fimg);
+    }
+
+    // Add external icon and class if external
+    if (isExternal) {
+      const ext_img = document.createElement("img");
+      ext_img.classList.add("dict-btn-external-img");
+      this.btn.classList.add("dict-btn-external");
+      this.btn.appendChild(ext_img);
+    }
   }
 
   do_lookup() {
@@ -152,11 +174,27 @@ class ImageLookupButton extends GeneralLookupButton {
 class YouGlishLookupButton extends GeneralLookupButton {
   constructor() {
     let handler = function(iframe) {
-      const text = LookupButton.TERM_FORM_CONTAINER.querySelector("#text").value;
+      if (!LookupButton.TERM_FORM_CONTAINER) {
+        console.error('YouGlish: TERM_FORM_CONTAINER not available');
+        return;
+      }
+      
+      const textEl = LookupButton.TERM_FORM_CONTAINER.querySelector("#text");
+      if (!textEl) {
+        console.error('YouGlish: text element not found');
+        return;
+      }
+      
+      const text = textEl.value;
       
       // Remove zero-width spaces and clean up
       const zeroWidthSpace = '\u200b';
       const cleanText = text.replaceAll(zeroWidthSpace, '').trim();
+      
+      if (!cleanText) {
+        console.warn('YouGlish: empty text');
+        return;
+      }
       
       // Get language name and map to YouGlish language code
       const langName = LookupButton.LANG_NAME || '';
@@ -182,7 +220,47 @@ class YouGlishLookupButton extends GeneralLookupButton {
       window.open(url, 'youglishwin', settings);
     };
 
-    super("youglish-btn", "YouGlish", "Look up on YouGlish", "dict-youglish-btn", handler);
+    super("youglish-btn", "youglish.com", "Look up on YouGlish", "dict-btn dict-youglish-btn", handler, "youglish.com", true);
+  }
+}
+
+
+class LingueeLookupButton extends GeneralLookupButton {
+  constructor() {
+    let handler = function(iframe) {
+      if (!LookupButton.TERM_FORM_CONTAINER) {
+        console.error('Linguee: TERM_FORM_CONTAINER not available');
+        return;
+      }
+      
+      const textEl = LookupButton.TERM_FORM_CONTAINER.querySelector("#text");
+      if (!textEl) {
+        console.error('Linguee: text element not found');
+        return;
+      }
+      
+      const text = textEl.value;
+      
+      // Remove zero-width spaces and clean up
+      const zeroWidthSpace = '\u200b';
+      const cleanText = text.replaceAll(zeroWidthSpace, '').trim();
+      
+      if (!cleanText) {
+        console.warn('Linguee: empty text');
+        return;
+      }
+      
+      const encodedText = encodeURIComponent(cleanText);
+      const url = `https://www.linguee.com/english-german/search?source=german&query=${encodedText}`;
+      
+      let settings = 'width=1000, height=700, scrollbars=yes, menubar=no, resizable=yes, status=no';
+      if (LUTE_USER_SETTINGS && LUTE_USER_SETTINGS.open_popup_in_new_tab) {
+        settings = null;
+      }
+      window.open(url, 'lingueewin', settings);
+    };
+
+    super("linguee-btn", "linguee.com", "Look up on Linguee", "dict-btn dict-linguee-btn", handler, "linguee.com", true);
   }
 }
 
@@ -358,20 +436,37 @@ function createLookupButtons(tab_count = 5) {
   destroy_existing_dictTab_controls();
   LookupButton.all = [];
 
-  if (LookupButton.TERM_DICTS.length <= 0) return;
+  // Filter Wiktionary for German language
+  let termDicts = LookupButton.TERM_DICTS;
+  const langName = LookupButton.LANG_NAME || '';
+  const isGerman = langName.toLowerCase() === 'german' || langName.toLowerCase() === 'deutsch';
+  if (isGerman) {
+    termDicts = termDicts.filter(dict => !dict.toLowerCase().includes('wiktionary.org'));
+  }
+
+  if (termDicts.length <= 0) return;
 
   // const dev_hack_add_dicts = Array.from({ length: 5 }, (_, i) => `a${i}`);
   // LookupButton.TERM_DICTS.push(...dev_hack_add_dicts);
 
-  if (tab_count == (LookupButton.TERM_DICTS.length - 1)) {
+  if (tab_count == (termDicts.length - 1)) {
     // Don't bother making a list with a single item.
     tab_count += 1;
   }
 
   // Make all DictButtons, which loads LookupButton.all.
-  LookupButton.TERM_DICTS.forEach((dict, index) => { new DictButton(dict,`dict${index}`); });
-  const tab_buttons = LookupButton.all.slice(0, tab_count);
+  termDicts.forEach((dict, index) => { new DictButton(dict,`dict${index}`); });
+  let tab_buttons = LookupButton.all.slice(0, tab_count);
   const list_buttons = LookupButton.all.slice(tab_count);
+  
+  // Add YouGlish and Linguee to dictionary tabs (not static tabs)
+  const youglishBtn = new YouGlishLookupButton();
+  tab_buttons.push(youglishBtn);
+  
+  if (isGerman) {
+    const lingueeBtn = new LingueeLookupButton();
+    tab_buttons.push(lingueeBtn);
+  }
 
   // Add elements to container.
   const container = document.getElementById("dicttabslayout");
@@ -384,14 +479,16 @@ function createLookupButtons(tab_count = 5) {
   }
   container.style.gridTemplateColumns = `repeat(${grid_col_count}, minmax(2rem, 8rem))`;
 
-  const first_button = LookupButton.all[0];
+  const first_button = tab_buttons[0];
   if (first_button) {
     first_button.activate();
     first_button.do_lookup();
   }
 
-  for (let b of [new SentenceLookupButton(), new ImageLookupButton(), new YouGlishLookupButton()])
+  // Add static buttons (Sentences, Images only)
+  for (let b of [new SentenceLookupButton(), new ImageLookupButton()]) {
     document.getElementById("dicttabsstatic").appendChild(b.btn);
+  }
 
   const dictframes = document.getElementById("dictframes");
   LookupButton.all.forEach((button) => { dictframes.appendChild(button.frame); });
