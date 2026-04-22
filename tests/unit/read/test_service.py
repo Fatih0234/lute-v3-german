@@ -23,19 +23,23 @@ def test_mark_page_read(english, app_context):
     sql_text_started = "select * from texts where TxStartDate is not null"
     sql_text_read = "select * from texts where TxReadDate is not null"
     sql_wordsread = "select * from wordsread"
+    sql_reading_sessions = "select * from reading_sessions"
     assert_record_count_equals(sql_text_started, 0, "not started, sanity check")
     assert_record_count_equals(sql_text_read, 0, "not read")
     assert_record_count_equals(sql_wordsread, 0, "not read")
+    assert_record_count_equals(sql_reading_sessions, 0, "no sessions")
 
     svc = Service(db.session)
     svc.mark_page_read(dbbook.id, 1, True)
     assert_record_count_equals(sql_text_started, 0, "still not started!")
     assert_record_count_equals(sql_text_read, 1, "read, text")
     assert_record_count_equals(sql_wordsread, 1, "read, wordsread")
+    assert_record_count_equals(sql_reading_sessions, 1, "read, sessions")
 
     svc.mark_page_read(dbbook.id, 1, True)
     assert_record_count_equals(sql_text_read, 1, "still read")
     assert_record_count_equals(sql_wordsread, 2, "extra record added")
+    assert_record_count_equals(sql_reading_sessions, 2, "extra session added")
 
 
 def test_set_unknowns_to_known(english, app_context):

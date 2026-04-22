@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Progress{% endblock %}
+
+{% block header %}Progress{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/progress-dashboard.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/chartjs/chart.umd.js') }}" charset="utf-8"></script>
+
+<div id="progress-dashboard"
+  data-overview-url="{{ url_for('stats_api.overview') }}"
+  data-books-url="{{ url_for('stats_api.books') }}"
+  data-vocabulary-url="{{ url_for('stats_api.vocabulary') }}"
+  data-streak-url="{{ url_for('stats_api.streak') }}">
+
+  <div class="progress-dashboard-header">
+    <p class="progress-dashboard-subtitle">
+      Reading streaks, vocabulary growth, book completion, and daily reading activity.
+    </p>
+  </div>
+
+  <section class="progress-kpis">
+    <div class="progress-kpi-card">
+      <div class="progress-kpi-label">Current streak</div>
+      <div class="progress-kpi-value" id="currentStreakValue">—</div>
+    </div>
+    <div class="progress-kpi-card">
+      <div class="progress-kpi-label">Best streak</div>
+      <div class="progress-kpi-value" id="bestStreakValue">—</div>
+    </div>
+    <div class="progress-kpi-card">
+      <div class="progress-kpi-label">Words today</div>
+      <div class="progress-kpi-value" id="wordsTodayValue">—</div>
+    </div>
+    <div class="progress-kpi-card">
+      <div class="progress-kpi-label">Words this week</div>
+      <div class="progress-kpi-value" id="wordsWeekValue">—</div>
+    </div>
+    <div class="progress-kpi-card">
+      <div class="progress-kpi-label">Active goals</div>
+      <div class="progress-kpi-value" id="activeGoalsValue">—</div>
+    </div>
+  </section>
+
+  <section class="progress-grid">
+    <article class="progress-panel">
+      <div class="progress-panel-heading">
+        <h2>Vocabulary distribution</h2>
+      </div>
+      <div class="progress-chart-wrap progress-chart-wrap-donut">
+        <canvas id="vocabularyDistributionChart"></canvas>
+      </div>
+      <div id="vocabularySummary" class="progress-summary-list"></div>
+    </article>
+
+    <article class="progress-panel">
+      <div class="progress-panel-heading">
+        <h2>Known words over time</h2>
+      </div>
+      <div class="progress-chart-wrap">
+        <canvas id="vocabularyTimelineChart"></canvas>
+      </div>
+    </article>
+
+    <article class="progress-panel progress-panel-wide">
+      <div class="progress-panel-heading">
+        <h2>Book completion</h2>
+      </div>
+      <div class="progress-chart-wrap">
+        <canvas id="bookCompletionChart"></canvas>
+      </div>
+      <div id="bookCompletionEmpty" class="progress-empty hidden">No books yet.</div>
+    </article>
+
+    <article class="progress-panel progress-panel-wide">
+      <div class="progress-panel-heading">
+        <h2>Reading heatmap</h2>
+      </div>
+      <div id="readingHeatmap" class="progress-heatmap"></div>
+      <div id="readingHeatmapEmpty" class="progress-empty hidden">No reading activity yet.</div>
+    </article>
+
+    <article class="progress-panel">
+      <div class="progress-panel-heading">
+        <h2>Recent streak activity</h2>
+      </div>
+      <div class="progress-chart-wrap progress-chart-wrap-short">
+        <canvas id="streakSparklineChart"></canvas>
+      </div>
+      <div id="streakMeta" class="progress-note"></div>
+    </article>
+
+    <article class="progress-panel">
+      <div class="progress-panel-heading">
+        <h2>Active goals</h2>
+      </div>
+      <div id="goalsList" class="progress-goals-list">
+        <div class="progress-empty">No active goals yet.</div>
+      </div>
+    </article>
+  </section>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/progress-dashboard.js') }}" charset="utf-8"></script>
+{% endblock %}

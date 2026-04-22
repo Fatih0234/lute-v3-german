@@ -112,6 +112,16 @@ class EditBookForm(FlaskForm):
 
     title = StringField("Title", validators=[DataRequired(), Length(max=255)])
     source_uri = StringField("Source URI", validators=[Length(max=1000)])
+    reading_status = SelectField(
+        "Reading Status",
+        choices=[
+            ("not_started", "Not started"),
+            ("reading", "Currently reading"),
+            ("completed", "Completed"),
+            ("paused", "Paused"),
+            ("abandoned", "Abandoned"),
+        ],
+    )
     book_tags = StringField("Tags")
     audiofile = FileField(
         "Audio file",

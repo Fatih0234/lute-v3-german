@@ -17,6 +17,8 @@ def get_data_tables_list(parameters, is_archived, session):
         case when currtext.TxID is null then 1 else currtext.TxOrder end as PageNum,
         textcounts.pagecount AS PageCount,
         booklastopened.lastopeneddate AS LastOpenedDate,
+        b.BkCreated as BkCreated,
+        b.BkReadingStatus as BkReadingStatus,
         BkArchived,
         tags.taglist AS TagList,
         textcounts.wc AS WordCount,

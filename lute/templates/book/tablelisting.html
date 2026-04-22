@@ -16,6 +16,8 @@
         <a href="/refresh_all_stats" class="refresh" title="Refresh stats for all books"></a>
       </th>
       <th style="text-align: left">Last read</th>
+      <th style="text-align: left">Added</th>
+      <th style="text-align: left">Status</th>
       <th style="text-align: left">Actions</th>
     </tr>
   </thead>
@@ -118,6 +120,8 @@
         { name: "WordCount", width: "10%", data: "WordCount" },
         { name: "UnknownPercent", "searchable": false, render: render_book_stats_graph_placeholder },
         { name: "LastOpenedDate", "searchable": false, render: render_last_opened_date },
+        { name: "BkCreated", "searchable": false, render: render_created_date },
+        { name: "BkReadingStatus", width: "8%", "searchable": false, render: render_reading_status },
         { width: "8%", "searchable": false, "orderable": false, render: render_book_actions },
       ],
       createdRow: function(row, data, dataIndex) { ajax_in_book_stats(row, data, dataIndex); },
@@ -309,13 +313,75 @@
   };
 
   let render_last_opened_date = function ( data, type, row, meta ) {
-    const dt = row["LastOpenedDate"];
-    if (dt == null) {
+    const display = row["LastOpenedDisplay"];
+    const full = row["LastOpenedFull"];
+    if (display == null) {
       return '';
     }
-    const djs = dayjs(dt);
-    const txt = djs.fromNow();
-    return `<span title="${dt}">${txt}</span>`;
+    // LastOpenedDisplay is pre-formatted by Python (converts UTC to Berlin time)
+    return `<span title="${full}">${display}</span>`;
+  };
+
+  let render_created_date = function ( data, type, row, meta ) {
+    const display = row["BkCreatedDisplay"];
+    const full = row["BkCreatedFull"];
+    if (display == null) {
+      return '';
+    }
+    // BkCreatedDisplay is pre-formatted by Python (converts UTC to Berlin time)
+    return `<span title="${full}">${display}</span>`;
+  };
+
+  let render_reading_status = function ( data, type, row, meta ) {
+    const status = row["BkReadingStatus"] || 'not_started';
+    const bkid = row['BkID'];
+    const statusLabels = {
+      'not_started': 'Not started',
+      'reading': 'Reading',
+      'completed': 'Completed',
+      'paused': 'Paused',
+      'abandoned': 'Abandoned'
+    };
+    const label = statusLabels[status] || status;
+    const cssClass = `reading-status-${status}`;
+    
+    // Create inline dropdown for quick status change
+    let options = '';
+    for (const [key, val] of Object.entries(statusLabels)) {
+      const selected = key === status ? 'selected' : '';
+      options += `<option value="${key}" ${selected}>${val}</option>`;
+    }
+    
+    return `<select class="status-dropdown ${cssClass}" data-bkid="${bkid}" onchange="update_reading_status(this)">${options}</select>`;
+  };
+
+  let update_reading_status = function(select) {
+    const bkid = $(select).data('bkid');
+    const newStatus = $(select).val();
+    const oldClass = select.className;
+    
+    // Disable during update
+    $(select).prop('disabled', true);
+    
+    $.ajax({
+      url: `/book/update_status/${bkid}`,
+      method: 'POST',
+      data: { status: newStatus },
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      success: function(response) {
+        // Update CSS class
+        $(select).removeClass().addClass(`status-dropdown reading-status-${newStatus}`);
+        $(select).prop('disabled', false);
+      },
+      error: function() {
+        alert('Failed to update status. Please try again.');
+        $(select).prop('disabled', false);
+        // Reload page to reset to correct value
+        location.reload();
+      }
+    });
   };
 
   let render_book_actions = function ( data, type, row, meta ) {

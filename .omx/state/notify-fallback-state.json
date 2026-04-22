@@ -1,0 +1,67 @@
+{
+  "pid": 316716,
+  "parent_pid": 316650,
+  "started_at": "2026-04-01T23:23:45.597Z",
+  "cwd": "/srv/lute/repo",
+  "notify_script": "/usr/lib/node_modules/oh-my-codex/dist/scripts/notify-hook.js",
+  "poll_ms": 250,
+  "pid_file": "/srv/lute/repo/.omx/state/notify-fallback.pid",
+  "max_lifetime_ms": 21600000,
+  "tracked_files": 2,
+  "seen_turns": 3,
+  "dispatch_drain": {
+    "enabled": true,
+    "max_per_tick": 5,
+    "run_count": 4270,
+    "leader_only": true,
+    "last_tick_at": "2026-04-01T23:43:52.347Z",
+    "last_result": {
+      "processed": 0,
+      "skipped": 0,
+      "failed": 0
+    },
+    "last_error": null
+  },
+  "leader_nudge": {
+    "enabled": true,
+    "leader_only": true,
+    "stale_threshold_ms": 180000,
+    "precomputed_leader_stale": false,
+    "last_tick_at": "2026-04-01T23:43:52.347Z",
+    "last_error": null,
+    "run_count": 4270
+  },
+  "ralph_continue_steer": {
+    "enabled": true,
+    "cadence_ms": 60000,
+    "message": "Ralph loop active continue",
+    "active": false,
+    "last_state_check_at": "2026-04-01T23:43:52.372Z",
+    "last_sent_at": "",
+    "cooldown_anchor_at": "2026-04-01T23:23:45.597Z",
+    "last_reason": "blocked_by_current_session",
+    "last_error": null,
+    "state_path": "",
+    "pane_id": "",
+    "pane_current_command": "",
+    "current_phase": "",
+    "shared_timestamp_path": "/srv/lute/repo/.omx/state/ralph-last-steer-at",
+    "shared_last_sent_at": "",
+    "singleton_lock_path": "/srv/lute/repo/.omx/state/ralph-continue-steer.lock"
+  },
+  "fallback_auto_nudge": {
+    "enabled": true,
+    "stall_ms": 5000,
+    "last_tick_at": "2026-04-01T23:43:52.361Z",
+    "last_turn_at": "2026-04-01T23:43:33.279Z",
+    "last_turn_count": 4,
+    "last_message": "Done.\n\nChanged files:\n- `lute/models/progress.py`\n- `lute/db/schema/migrations/20260401_233500_creat",
+    "last_reason": "eligible_but_not_sent",
+    "last_error": null,
+    "last_nudged_signature": "hud:1|2026-04-01T23:30:25.254Z|using ' plan' in direct mode plan saved to ' omx plans progress dashboard plan 2026 04 01 md'",
+    "last_nudged_at": "2026-04-01T23:30:30.317Z"
+  },
+  "stop_reason": "signal",
+  "stop_signal": "SIGTERM",
+  "stopping": true
+}

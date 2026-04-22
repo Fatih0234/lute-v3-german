@@ -7,6 +7,7 @@ from datetime import datetime
 import functools
 from lute.models.term import Term, Status
 from lute.models.book import Text, WordsRead
+from lute.models.progress import ReadingSession
 from lute.models.repositories import BookRepository, UserSettingRepository
 from lute.book.stats import Service as StatsService
 from lute.read.render.service import Service as RenderService
@@ -89,8 +90,10 @@ class Service:
         text.read_date = d
 
         w = WordsRead(text, d, text.word_count)
+        rs = ReadingSession.from_text(text, d)
         self.session.add(text)
         self.session.add(w)
+        self.session.add(rs)
         self.session.commit()
         if mark_rest_as_known:
             self.set_unknowns_to_known(text)

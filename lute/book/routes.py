@@ -44,6 +44,83 @@ def _load_term_custom_filters(request_form, parameters):
         parameters[p] = request_params.get(p)
 
 
+def _format_datetime_berlin(dt_value):
+    "Convert a UTC datetime to Berlin time and format it for display."
+    from datetime import datetime
+    import pytz
+    
+    if not dt_value:
+        return None, None
+    
+    berlin = pytz.timezone('Europe/Berlin')
+    utc = pytz.UTC
+    
+    # Parse the UTC time
+    if isinstance(dt_value, str):
+        try:
+            dt = datetime.fromisoformat(dt_value.replace('Z', '+00:00'))
+        except:
+            return None, None
+    else:
+        dt = dt_value
+        
+    # Ensure it's timezone-aware
+    if dt.tzinfo is None:
+        dt = utc.localize(dt)
+    
+    # Convert to Berlin time
+    berlin_time = dt.astimezone(berlin)
+    
+    # Calculate relative time
+    now = datetime.now(berlin)
+    diff = now - berlin_time
+    
+    # Format relative time
+    if diff.total_seconds() < 60:
+        relative = "just now"
+    elif diff.total_seconds() < 3600:
+        minutes = int(diff.total_seconds() / 60)
+        relative = f"{minutes} minute{'s' if minutes != 1 else ''} ago"
+    elif diff.total_seconds() < 86400:
+        hours = int(diff.total_seconds() / 3600)
+        relative = f"{hours} hour{'s' if hours != 1 else ''} ago"
+    elif diff.total_seconds() < 604800:
+        days = int(diff.total_seconds() / 86400)
+        relative = f"{days} day{'s' if days != 1 else ''} ago"
+    elif diff.total_seconds() < 2592000:
+        weeks = int(diff.total_seconds() / 604800)
+        relative = f"{weeks} week{'s' if weeks != 1 else ''} ago"
+    else:
+        months = int(diff.total_seconds() / 2592000)
+        relative = f"{months} month{'s' if months != 1 else ''} ago"
+    
+    full = berlin_time.strftime('%Y-%m-%d %H:%M:%S %Z')
+    return relative, full
+
+
+def _format_created_date(data):
+    "Format BkCreated and LastOpenedDate dates for display, converting UTC to Berlin time."
+    
+    for row in data.get('data', []):
+        # Format BkCreated
+        created = row.get('BkCreated')
+        if created:
+            relative, full = _format_datetime_berlin(created)
+            if relative:
+                row['BkCreatedDisplay'] = relative
+                row['BkCreatedFull'] = full
+        
+        # Format LastOpenedDate
+        last_opened = row.get('LastOpenedDate')
+        if last_opened:
+            relative, full = _format_datetime_berlin(last_opened)
+            if relative:
+                row['LastOpenedDisplay'] = relative
+                row['LastOpenedFull'] = full
+    
+    return data
+
+
 def datatables_source(is_archived):
     "Get datatables json for books."
     # In the future, we might want to create an API such as
@@ -53,6 +130,7 @@ def datatables_source(is_archived):
     parameters = DataTablesFlaskParamParser.parse_params(request.form)
     _load_term_custom_filters(request.form, parameters)
     data = get_data_tables_list(parameters, is_archived, db.session)
+    data = _format_created_date(data)
     return jsonify(data)
 
 
@@ -231,3 +309,31 @@ def table_stats(bookid):
         "status_distribution": stats.status_distribution,
     }
     return jsonify(ret)
+
+
+@bp.route("/update_status/<int:bookid>", methods=["POST"])
+def update_status(bookid):
+    "Update reading status via AJAX."
+    b = _find_book(bookid)
+    if b is None:
+        return jsonify({"error": "Book not found"}), 404
+    
+    new_status = request.form.get("status")
+    if not new_status:
+        return jsonify({"error": "No status provided"}), 400
+    
+    # Validate status
+    from lute.models.book import Book
+    if new_status not in Book.VALID_READING_STATUSES:
+        return jsonify({"error": f"Invalid status: {new_status}"}), 400
+    
+    b.reading_status = new_status
+    db.session.add(b)
+    db.session.commit()
+    
+    return jsonify({
+        "success": True,
+        "book_id": bookid,
+        "status": new_status,
+        "label": b.get_reading_status_label()
+    })

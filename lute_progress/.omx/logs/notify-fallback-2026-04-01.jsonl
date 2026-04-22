@@ -1,0 +1,8 @@
+{"timestamp":"2026-04-01T23:20:29.057Z","type":"watcher_start","cwd":"/srv/lute/repo/lute_progress","notify_script":"/usr/lib/node_modules/oh-my-codex/dist/scripts/notify-hook.js","poll_ms":250,"once":false,"parent_pid":315879,"pid_file":"/srv/lute/repo/lute_progress/.omx/state/notify-fallback.pid","max_lifetime_ms":21600000}
+{"timestamp":"2026-04-01T23:20:29.059Z","type":"dispatch_drain_tick","leader_only":true,"dispatch_max_per_tick":5,"run_count":1,"processed":0,"skipped":0,"failed":0}
+{"timestamp":"2026-04-01T23:20:29.084Z","type":"leader_nudge_tick","leader_only":true,"run_count":1,"stale_threshold_ms":180000,"precomputed_leader_stale":false,"reason":"leader_nudge_skipped_not_stale"}
+{"timestamp":"2026-04-01T23:20:29.228Z","type":"watcher_start","cwd":"/srv/lute/repo/lute_progress","notify_script":"/usr/lib/node_modules/oh-my-codex/dist/scripts/notify-hook.js","poll_ms":250,"once":true,"parent_pid":315879,"pid_file":null,"max_lifetime_ms":0}
+{"timestamp":"2026-04-01T23:20:29.229Z","type":"dispatch_drain_tick","leader_only":true,"dispatch_max_per_tick":5,"run_count":1,"processed":0,"skipped":0,"failed":0}
+{"timestamp":"2026-04-01T23:20:29.250Z","type":"leader_nudge_tick","leader_only":true,"run_count":1,"stale_threshold_ms":180000,"precomputed_leader_stale":false,"reason":"leader_nudge_skipped_not_stale"}
+{"timestamp":"2026-04-01T23:20:29.253Z","type":"watcher_once_complete","seen_turns":0}
+{"timestamp":"2026-04-01T23:20:29.261Z","type":"watcher_stop","signal":"SIGTERM","reason":"signal","parent_pid":315879,"pid_file":"/srv/lute/repo/lute_progress/.omx/state/notify-fallback.pid"}

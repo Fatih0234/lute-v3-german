@@ -48,10 +48,21 @@ class Book(
     source_uri = db.Column("BkSourceURI", db.String(length=1000))
     current_tx_id = db.Column("BkCurrentTxID", db.Integer, default=0)
     archived = db.Column("BkArchived", db.Boolean, default=False)
+    created = db.Column("BkCreated", db.DateTime, nullable=True)
+    reading_status = db.Column("BkReadingStatus", db.String(20), default='not_started')
 
     audio_filename = db.Column("BkAudioFilename", db.String)
     audio_current_pos = db.Column("BkAudioCurrentPos", db.Float)
     audio_bookmarks = db.Column("BkAudioBookmarks", db.String)
+
+    # Valid reading status values
+    VALID_READING_STATUSES = {
+        'not_started': 'Not started',
+        'reading': 'Currently reading',
+        'completed': 'Completed',
+        'paused': 'Paused',
+        'abandoned': 'Abandoned'
+    }
 
     language = db.relationship("Language")
     texts = db.relationship(
@@ -63,9 +74,11 @@ class Book(
     book_tags = db.relationship("BookTag", secondary="booktags")
 
     def __init__(self, title=None, language=None, source_uri=None):
+        from datetime import datetime
         self.title = title
         self.language = language
         self.source_uri = source_uri
+        self.created = datetime.now()
         self.texts = []
         self.book_tags = []
 
@@ -81,6 +94,17 @@ class Book(
 
     def remove_book_tag(self, book_tag):
         self.book_tags.remove(book_tag)
+
+    def get_reading_status_label(self):
+        "Return human-readable label for current reading status."
+        return self.VALID_READING_STATUSES.get(self.reading_status, 'Unknown')
+
+    def set_reading_status(self, status):
+        "Set reading status if valid."
+        if status in self.VALID_READING_STATUSES:
+            self.reading_status = status
+        else:
+            raise ValueError(f"Invalid status: {status}. Must be one of: {list(self.VALID_READING_STATUSES.keys())}")
 
     @property
     def page_count(self):
